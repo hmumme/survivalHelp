@@ -18,7 +18,6 @@ library(dplyr)
 #' expr = dplyr::tibble(symbol = c("gene1","gene2","gene3"), A = c(0.063, 0.0213, 0.0059), B = c(0,0.1,0.5), C = c(0.03,0.05,0.22))
 #' os = dplyr::tibble(sample = c("A","B","C"), OS = c(20.1,100.2,5.02), Vital.Status = c("Alive","Alive","Dead"))
 #' mCut("gene1", mat = expr, os = os, cut = "cutP")
-#'
 mCut = function(gene, mat, os, cut = "median") {
     geneExp = mat %>% filter(symbol == gene) %>% select(!"symbol") %>% unlist(., use.names = FALSE) %>% as.numeric() # extract all values for gene    
     geneExp = log2(geneExp + 1) # retrieve log2(FPKM+1)
