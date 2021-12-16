@@ -1,11 +1,11 @@
 ## Required Libraries to run these functions:
-library(survival)
-library(tidyverse)
-library(ggplot2)
-library(patchwork)
-library(GSVA)
-library(survMisc)
-library(dplyr)
+#library(survival)
+#library(tidyverse)
+#library(ggplot2)
+#library(patchwork)
+#library(GSVA)
+#library(survMisc)
+#library(dplyr)
 
 #' provide cutoff threshold and gene expression values for specific gene
 #'
@@ -15,18 +15,20 @@ library(dplyr)
 #' @param cut method to use to separate into high and low groups, can be either median (defualt) or cutP
 #' @return the cutoff threshold and expression values (log2(FPKM+1)) as a list
 #' @examples
-#' expr = dplyr::tibble(symbol = c("gene1","gene2","gene3"), A = c(0.063, 0.0213, 0.0059), B = c(0,0.1,0.5), C = c(0.03,0.05,0.22))
-#' os = dplyr::tibble(sample = c("A","B","C"), OS = c(20.1,100.2,5.02), Vital.Status = c("Alive","Alive","Dead"))
+#' data = data.frame(data = matrix(rnorm(100),ncol=10))
+#' expr = dplyr::tibble(symbol = paste0(rep("gene",10),1:10), data)
+#' colnames(expr) = c("symbol", letters[1:10])
+#' os = dplyr::tibble(sample = letters[1:10], OS = 10:19, Vital.Status = c(rep("Alive",8),rep("Dead",2)))
 #' mCut("gene1", mat = expr, os = os, cut = "cutP")
 mCut = function(gene, mat, os, cut = "median") {
-    geneExp = mat %>% filter(symbol == gene) %>% select(!"symbol") %>% unlist(., use.names = FALSE) %>% as.numeric() # extract all values for gene    
+    geneExp = mat %>% dplyr::filter(symbol == gene) %>% dplyr::select(!"symbol") %>% unlist(., use.names = FALSE) %>% as.numeric() # extract all values for gene    
     geneExp = log2(geneExp + 1) # retrieve log2(FPKM+1)
     if (cut == "median") {
         cutoff = median(geneExp[2:length(geneExp)]) # find median for gene (removing NA at beginning due to symbol column)
     } else if (cut == "cutP") {
         os["Exp"] = geneExp
-        cox.os = coxph(Surv(time=os$OS, event=os$Vital.Status=="Dead")~Exp, data = os) # get survival based on Expression
-        c = cutp(cox.os)$Exp # get cutp output
+        cox.os = suppressWarnings(survival::coxph(survival::Surv(time=os$OS, event=os$Vital.Status=="Dead")~Exp, data = os)) # get survival based on Expression
+        c = survMisc::cutp(cox.os)$Exp # get cutp output
         data.table::setorder(c, "Exp") # create table with cut points
         percentile <- ecdf(c$Exp) # find cdf of Expression points
         cutoff <- as.numeric(c[order(c$Q), ][nrow(c), 1]) # find optimal expression CutOff
@@ -36,9 +38,6 @@ mCut = function(gene, mat, os, cut = "median") {
         os$group = "Low"
         return(os)
     }
-    #os$group = "Low"
-    #os$group[os$sample %in% highSamples] = "High"
-    #os$group = factor(os$group, levels = c("Low","High"))# change levels so that the reference group is Low expression
     out = list(signif(cutoff,3), geneExp)
     names(out) = c("cutoff","geneExp")
     return(out)

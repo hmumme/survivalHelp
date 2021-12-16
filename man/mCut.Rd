@@ -22,7 +22,9 @@ the cutoff threshold and expression values (log2(FPKM+1)) as a list
 provide cutoff threshold and gene expression values for specific gene
 }
 \examples{
-expr = dplyr::tibble(symbol = c("gene1","gene2","gene3"), A = c(0.063, 0.0213, 0.0059), B = c(0,0.1,0.5), C = c(0.03,0.05,0.22))
-os = dplyr::tibble(sample = c("A","B","C"), OS = c(20.1,100.2,5.02), Vital.Status = c("Alive","Alive","Dead"))
+data = data.frame(data = matrix(rnorm(100),ncol=10))
+expr = dplyr::tibble(symbol = paste0(rep("gene",10),1:10), data)
+colnames(expr) = c("symbol", letters[1:10])
+os = dplyr::tibble(sample = letters[1:10], OS = 10:19, Vital.Status = c(rep("Alive",8),rep("Dead",2)))
 mCut("gene1", mat = expr, os = os, cut = "cutP")
 }
