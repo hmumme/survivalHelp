@@ -14,6 +14,7 @@
 #' @param os tibble with samples, overall survival (OS) values, and Vital.Status values
 #' @param cut method to use to separate into high and low groups, can be either median (defualt) or cutP
 #' @return the cutoff threshold and expression values (log2(FPKM+1)) as a list
+#' @export
 #' @examples
 #' data = data.frame(data = matrix(rnorm(100),ncol=10))
 #' expr = dplyr::tibble(symbol = paste0(rep("gene",10),1:10), data)
@@ -178,7 +179,7 @@ checkSurv = function(gene, ENS, mat, os, ref) {
 #'@name callGSVA
 #'@aliases callGSVA
 #'@title GSVA enrichment analysis
-#'@description Estimates GSVA enrichment zscores.
+#'@description Estimates GSVA enrichment zscores (from SurvivalGenie).
 #'@usage callGSVA(x,y)
 #'@param x A data frame or matrix of gene or probe expression values where rows corrospond to genes and columns corrospond to samples
 #'@param y A list of genes as data frame or vector
@@ -197,7 +198,6 @@ checkSurv = function(gene, ENS, mat, os, ref) {
 #'## Estimates GSVA enrichment zscores.
 #'callGSVA(expr,genes)
 #'@seealso GSVA
-#'@export
 callGSVA = function(x,y) {
     if(missing(x)){
     stop("input expression data missing!")

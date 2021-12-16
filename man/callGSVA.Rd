@@ -15,7 +15,7 @@ callGSVA(x,y)
 A gene-set by sample matrix of GSVA enrichment zscores.
 }
 \description{
-Estimates GSVA enrichment zscores.
+Estimates GSVA enrichment zscores (from SurvivalGenie).
 }
 \details{
 This function uses "zscore" gene-set enrichment method in the estimation of gene-set enrichment scores per sample.
