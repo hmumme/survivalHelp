@@ -135,7 +135,6 @@ survStats = function(os) {
     return(stats)
 }
 
-
 # FROM SURVIVALGENIE
 #'@name callGSVA
 #'@aliases callGSVA
@@ -180,6 +179,17 @@ callGSVA = function(x,y) {
     # out -- (output from mCut or mSet), list with cutoff value and either GSVA scores or Gene Expression values
     # outputs:
     # os -- input tibble now with group column separated into High and Low values based on cutoff and scores/expression
+#' split survival data into High and Low groups based on cutoff value and scores/expression values
+#'
+#' @param os tibble with columns: samples, OS values, and Vital.Status
+#' @param out output from mCut or mSet. It contains the cutoff threshold and either GSEA scores ("scores") or Gene Expression ("geneExp") values for each sample
+#' @return the os["group"] column with samples split into High and Low groups
+#' @export
+#' @examples
+#' os = dplyr::tibble(sample = letters[1:10], OS = 10:19, Vital.Status = c(rep("Alive",8),rep("Dead",2)))
+#' out = list("cutoff" = 0.44, "scores" = rnorm(10))
+#' os["group"] = cut(os,out)
+#' os
 cut = function(os, out) {
     if (names(out)[2] == "geneExp") {
         os["Exp"] = out[[2]]
