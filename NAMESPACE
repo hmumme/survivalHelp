@@ -3,5 +3,6 @@
 export("%>%")
 export(mCut)
 export(mSet)
+export(survStats)
 import(GSVA)
 importFrom(magrittr,"%>%")

@@ -89,12 +89,15 @@ mSet = function(gs, ENS, os, ref, cut = "median") {
     return(out) # return cutoff point and Scores
 }
 
-# function findENS
-    # inputs:
-    # genes -- gene names we want to find ENSMBL ids for
-    # ref -- reference matrix to search
-    # outputs:
-    # ens -- list of ENSMBL ids for the input genes
+#' convert gene symbols to ENSMBL ids
+#'
+#' @param genes gene symbols
+#' @param ref reference tibble with ensmble ids and gene symbols as columns
+#' @return character vector of ENSMBL ids for genes
+#' @examples
+#' genes = c("gene3","gene4","gene10")
+#' ref = dplyr::tibble(ensg = paste0(rep("ENSG",10), 1:10), symbol = paste0(rep("gene",10), 10:1))
+#' findENS(genes, ref)
 findENS = function(genes, ref) {
     ens = "" # create empty vector to add onto
     for (i in 1:length(genes)) {
@@ -116,11 +119,16 @@ findENS = function(genes, ref) {
     # os -- tibble with samples, OS values, and filled in column "group"
     # outputs:
     # stats -- tibble filled in with test statistics (Comparison, survdiffP, coxHR, coxP)
+#' calculate survival statistics for split survival data
+#' 
+#' @param os tibble with sample, OS, Vital.Status, and group (High/Low) columns
+#' @return stats tibble filled with test statistics for survival data: Comparison, survdiffP, coxHR, coxP
+#' @export
 survStats = function(os) {
     stats = data.frame("Comparison" = "", "survdiffP" = "", "coxHR" = "", "coxP" = "")
-    surv = Surv(time=os$OS, event=os$Vital.Status=="Dead")
-    sdOut = survdiff(surv~group, data = os) # save survdiff output
-    cpOut = coxph(surv~group, data = os) # save coxph output
+    surv = survival::Surv(time=os$OS, event=os$Vital.Status=="Dead")
+    sdOut = survival::survdiff(surv~group, data = os) # save survdiff output
+    cpOut = survival::coxph(surv~group, data = os) # save coxph output
     stats$survdiffP = 1 - pchisq(sdOut$chisq, length(sdOut$n) - 1) # fill in survdiff p-value
     stats$coxHR = summary(cpOut)$coefficients[2] # fill in coxph Hazard Ratio
     stats$coxP = summary(cpOut)$coefficients[5] # fill in coxph p-value
