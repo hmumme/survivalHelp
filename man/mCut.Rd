@@ -9,7 +9,7 @@ mCut(gene, mat, os, cut = "median")
 \arguments{
 \item{gene}{the gene we want to use to classify samples based on expression}
 
-\item{mat}{tibble with samples and gene expression (FPKM)}
+\item{mat}{expression values (FPKM) tibble with samples as columns and symbol column containing gene names}
 
 \item{os}{tibble with samples, overall survival (OS) values, and Vital.Status values}
 
@@ -22,7 +22,7 @@ the cutoff threshold and expression values (log2(FPKM+1)) as a list
 provide cutoff threshold and gene expression values for specific gene
 }
 \examples{
-data = data.frame(data = matrix(rnorm(100),ncol=10))
+data = abs(data.frame(data = matrix(rnorm(100),ncol=10)))
 expr = dplyr::tibble(symbol = paste0(rep("gene",10),1:10), data)
 colnames(expr) = c("symbol", letters[1:10])
 os = dplyr::tibble(sample = letters[1:10], OS = 10:19, Vital.Status = c(rep("Alive",8),rep("Dead",2)))
