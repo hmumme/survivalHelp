@@ -1,12 +1,3 @@
-## Required Libraries to run these functions:
-#library(survival)
-#library(tidyverse)
-#library(ggplot2)
-#library(patchwork)
-#library(GSVA)
-#library(survMisc)
-#library(dplyr)
-
 #' provide cutoff threshold and gene expression values for specific gene
 #'
 #' @param gene the gene we want to use to classify samples based on expression
@@ -196,4 +187,25 @@ cutGroups = function(os, out) {
     }
     os$group = factor(os$group, levels = c("Low","High"))# change levels so that the reference group is Low expression
     return(os$group)
+}
+
+#' plot the survival Kaplan-Meier curve
+#' 
+#' @param os overall survival tibble with High/Low groups formed
+#' @param name name of the gene/geneSet for the title, default is "gene"
+#' @return plotting object
+#' @export
+#' @examples 
+#' os = dplyr::tibble(sample = letters[1:10], OS = 10:19, Vital.Status = c(rep("Alive",8),rep("Dead",2)))
+#' out = list("cutoff" = 0.44, "scores" = rnorm(10))
+#' os["group"] = cut(os,out)
+#' plotSurv(os, "gene1")
+plotSurv = function(os, name = "gene") {
+    surv = survfit(Surv(time=OS, event=Vital.Status=="Dead")~group, data = os, conf.type = "log-log") # calculate survival
+    plot(surv, 
+         main = paste0("Survival Curves by ", name , "Expression"), 
+         xlab = "Length of Survival (months)",
+         ylab="Probability of Survival",
+         col=c("blue","red"))
+    legend("topright", legend=c("High","Low"),fill=c("red","blue"),bty="n")
 }

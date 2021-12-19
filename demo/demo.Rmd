@@ -1,0 +1,26 @@
+---
+title: "survivalHelp Demo"
+author: "Hope Mumme"
+date: "12/19/2021"
+output: pdf_document
+---
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+#devtools::install("hmumme/survivalHelp") # uncomment if you have not installed survivalHelp
+library(survivalHelp)
+load("~/GitHub/survivalHelp/demo/data/mpalData.RData") # load demo data
+```
+
+The file mpalData.RData contains the necessary objects to run survival analysis on the MPAL samples from the TARGET-ALL-P3 (ALAL) datasets. It includes the bulkRNA-seq expression matrices for both the B/Myeloid and T/Myeloid MPAL samples, the ensmbl id matrices, the ensmbl to gene symbol reference data frame, and the survival data for both subsets. 
+
+```{r ls()}
+ls()
+```
+
+First, we will show how to obtain survival plots for a single gene's expression in B/Myeloid MPAL samples.
+
+```{r single gene B/M}
+
+```
+
