@@ -201,9 +201,9 @@ cutGroups = function(os, out) {
 #' os["group"] = cut(os,out)
 #' plotSurv(os, "gene1")
 plotSurv = function(os, name = "gene") {
-    surv = survfit(Surv(time=OS, event=Vital.Status=="Dead")~group, data = os, conf.type = "log-log") # calculate survival
+    surv = survival::survfit(survival::Surv(time=OS, event=Vital.Status=="Dead")~group, data = os, conf.type = "log-log") # calculate survival
     plot(surv, 
-         main = paste0("Survival Curves by ", name , "Expression"), 
+         main = paste0("Survival Curves by ", name , " Expression"), 
          xlab = "Length of Survival (months)",
          ylab="Probability of Survival",
          col=c("blue","red"))

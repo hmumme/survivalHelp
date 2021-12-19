@@ -12,15 +12,61 @@ library(survivalHelp)
 load("~/GitHub/survivalHelp/demo/data/mpalData.RData") # load demo data
 ```
 
-The file mpalData.RData contains the necessary objects to run survival analysis on the MPAL samples from the TARGET-ALL-P3 (ALAL) datasets. It includes the bulkRNA-seq expression matrices for both the B/Myeloid and T/Myeloid MPAL samples, the ensmbl id matrices, the ensmbl to gene symbol reference data frame, and the survival data for both subsets. 
+The file mpalData.RData contains the necessary objects to run survival analysis on the MPAL samples from the TARGET-ALL-P3 (ALAL) datasets. It includes the bulkRNA-seq expression matrices for both the B/Myeloid and T/Myeloid pediatric MPAL samples, the ensmbl id matrices, the ensmbl to gene symbol reference data frame, and the survival data for both subsets. 
 
 ```{r ls()}
 ls()
 ```
+#### Single Gene
 
-First, we will show how to obtain survival plots for a single gene's expression in B/Myeloid MPAL samples.
+First, we will show how to obtain survival plots for a single gene's expression in B/Myeloid MPAL samples. You can use either median or cutP as the cut method here. 
 
-```{r single gene B/M}
-
+```{r single gene B/M pt.1}
+gene = "TP53"
+out = mCut(gene, bMat, osB, cut = "cutP")
+out
 ```
+The mCut function returns the gene expression cutoff to use to split samples into High and Low groups based on cutP method and the gene expression values for each sample.
 
+```{r single gene B/M pt.2}
+osB["group"] = cutGroups(osB, out)
+osB
+```
+The samples have been split into High and Low categories in the osB group column.
+
+```{r single gene B/M pt.3}
+plotSurv(osB, name = "TP53")
+```
+We can also calculate the survival statistics.
+
+```{r single gene B/M pt.4}
+survStats(osB)
+```
+We calculated the logRank p-value (survdiffP) for the survival plot, the Cox Hazard Ratio (coxHR), and the Cox HR p-value (coxP). From these statistics, we can see that the expression of TP53 does not have a significant effect on B/Myeloid MPAL pediatric survival.
+
+### Gene Set
+
+Second, we will show how to obtain survival plots for a combined gene set's expression in T/Myeloid MPAL samples. You can use either median or cutP as the cut method here. Instead of individual expression values, we take the GSEA scores for a gene set and use this when splitting samples into High/Low groups. 
+
+```{r gene set T/M pt.1}
+gs = c("TP53","ICAM1","HPGD")
+out = mSet(gs = gs, ENS = tENS, os = osT, ref = ref, cut = "cutP")
+out
+```
+The mSet function returns the GSEA score cutoff to use to split samples into High and Low groups based on cutP method and the GSEA values for each sample.
+
+```{r gene set T/M pt.2}
+osT["group"] = cutGroups(osT, out)
+osT
+```
+The samples have been split into High and Low categories in the osT group column.
+
+```{r gene set T/M pt.3}
+plotSurv(osT, name = "TP53, ICAM1, and HPGD")
+```
+We can calculate the survival statistics for the gene set
+
+```{r gene set T/M pt.r}
+survStats(osT)
+```
+We calculated the logRank p-value (survdiffP) for the survival plot, the Cox Hazard Ratio (coxHR), and the Cox HR p-value (coxP). From these statistics, we can see that the gene set of TP53, ICAM1, and HPGD does not have a significant effect on T/Myeloid MPAL pediatric survival.
