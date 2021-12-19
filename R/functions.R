@@ -173,12 +173,6 @@ callGSVA = function(x,y) {
     return (tr_gsva.results)
 }
 
-# function cut 
-    # inputs:
-    # os -- tibble with samples, OS values
-    # out -- (output from mCut or mSet), list with cutoff value and either GSVA scores or Gene Expression values
-    # outputs:
-    # os -- input tibble now with group column separated into High and Low values based on cutoff and scores/expression
 #' split survival data into High and Low groups based on cutoff value and scores/expression values
 #'
 #' @param os tibble with columns: samples, OS values, and Vital.Status
@@ -190,7 +184,7 @@ callGSVA = function(x,y) {
 #' out = list("cutoff" = 0.44, "scores" = rnorm(10))
 #' os["group"] = cut(os,out)
 #' os
-cut = function(os, out) {
+cutGroups = function(os, out) {
     if (names(out)[2] == "geneExp") {
         os["Exp"] = out[[2]]
         os[os$Exp > out[[1]],"group"] = "High"
