@@ -20,4 +20,6 @@ split survival data into High and Low groups based on cutoff value and scores/ex
 \examples{
 os = dplyr::tibble(sample = letters[1:10], OS = 10:19, Vital.Status = c(rep("Alive",8),rep("Dead",2)))
 out = list("cutoff" = 0.44, "scores" = rnorm(10))
+os["group"] = cut(os,out)
+os
 }
